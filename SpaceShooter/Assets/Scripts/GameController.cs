@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-public GameObject hazard;
+public GameObject[] hazards;
 public Vector3 spawnValues;
 public int hazardCount;
 public float spawnWait;
@@ -15,6 +15,7 @@ public float waveWait;
 public Text ScoreText;
 public Text RestartText;
 public Text GameOverText;
+public Text WinText;
 private bool gameOver;
 private bool restart;
 private int score;
@@ -25,6 +26,7 @@ gameOver = false;
 restart = false;
 RestartText.text = "";
 GameOverText.text = "";
+WinText.text = "";
 score = 0;
 UpdateScore();
 StartCoroutine(SpawnWaves());
@@ -34,8 +36,8 @@ void Update()
 {
   if (restart)
   {
-    if (Input.GetKeyDown (KeyCode.R))
-    {
+    if (Input.GetKeyDown (KeyCode.K))
+    { 
       SceneManager.LoadScene("Main");
     }
   }
@@ -48,6 +50,7 @@ while (true)
 {
 for (int i = 0; i < hazardCount; i++)
 {
+GameObject hazard = hazards[Random.Range(0, hazards.Length - 1)]; 
 Vector3 spawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
 Quaternion spawnRotation = Quaternion.identity;
 Instantiate(hazard, spawnPosition, spawnRotation);
@@ -56,7 +59,7 @@ yield return new WaitForSeconds(spawnWait);
 yield return new WaitForSeconds(waveWait);
 if (gameOver)
 {
-  RestartText.text = "Press 'R' for restart";
+  RestartText.text = "Press 'K' for restart";
   restart = true;
   break;
 }
@@ -71,11 +74,17 @@ UpdateScore();
 
 void UpdateScore()
 {
-ScoreText.text = "Score: " + score;
+ScoreText.text = "Points: " + score;
+ if(score >= 100)
+ {
+    WinText.text = "You win!";
+    gameOver = true;
+    restart = true;
+ }
 }
 public void GameOver ()
 {
- GameOverText.text = "Game Over!";
+ GameOverText.text = "GAME CREATED BY NICHOLAS MICELI";
  gameOver = true;
 }
 }
