@@ -16,17 +16,26 @@ public Text ScoreText;
 public Text RestartText;
 public Text GameOverText;
 public Text WinText;
+public Text HardModeText;
+public Text TimedText;
 private bool gameOver;
 private bool restart;
-private int score;
+public bool hard;
+public int score;
+public float timeLeft = 30;
+private Mover mover;
+public bool firstTime = true;
 
 void Start()
 {
 gameOver = false;
 restart = false;
+hard = true;
 RestartText.text = "";
 GameOverText.text = "";
 WinText.text = "";
+HardModeText.text = "Press H for Hard Mode!";
+TimedText.text = "Hold T for Timed Mode!";
 score = 0;
 UpdateScore();
 StartCoroutine(SpawnWaves());
@@ -34,6 +43,21 @@ StartCoroutine(SpawnWaves());
 
 void Update()
 {
+
+    if (Input.GetKey (KeyCode.T) && firstTime)
+    {
+      firstTime = false;
+    }
+    if (firstTime == false)
+    {
+      timeLeft -= Time.deltaTime;
+      TimedText.text = (timeLeft).ToString("0");
+      if(timeLeft < 0)
+       {
+          GameOver();
+       }
+    }
+
   if (restart)
   {
     if (Input.GetKeyDown (KeyCode.K))
@@ -85,6 +109,16 @@ ScoreText.text = "Points: " + score;
 public void GameOver ()
 {
  GameOverText.text = "GAME CREATED BY NICHOLAS MICELI";
+ TimedText.text = "";
  gameOver = true;
+}
+public void TimeAttack()
+{
+  timeLeft -= Time.deltaTime;
+  TimedText.text = (timeLeft).ToString("0");
+  if(timeLeft < 0)
+  {
+    GameOver();
+  }
 }
 }
